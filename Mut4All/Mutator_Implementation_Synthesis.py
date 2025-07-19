@@ -25,7 +25,7 @@ def load_config(config_path, language):
         with open(config_path, 'r', encoding='utf-8') as f:
             config = json.load(f)
         if language not in config:
-            raise ValueError(f"Unsupported language: {language} ")
+            raise ValueError(f"Unsupported language: {language}.")
         
         # API_KET is initialized
         OPENAI_API_KEY = config[language]["api_key"]
@@ -42,9 +42,9 @@ def load_config(config_path, language):
             raise ValueError("One or more configuration variables are empty. Please check the configuration file.")
         return config
     except FileNotFoundError:
-        raise FileNotFoundError(f"The configuration file {config_path} does not exist. Please ensure that the file is located in the specified path ")
+        raise FileNotFoundError(f"The configuration file {config_path} does not exist. Please ensure that the file is located in the specified path.")
     except json.JSONDecodeError:
-        raise ValueError(f"The format of the configuration file {config_path} is incorrect. Please check the JSON syntax ")
+        raise ValueError(f"The format of the configuration file {config_path} is incorrect. Please check the JSON syntax.")
     
 # read mutation
 def read_mutation_suggestions(directory):
@@ -126,7 +126,7 @@ def generate_mutator(mutation_content,mutator_index):
     9. Provide only the complete {LANGUAGE} code for the mutator, matching the template's style;
     10. Do not wrap the output in Markdown code blocks (e.g., ```{LANGUAGE} or ```). Output only the raw {LANGUAGE} code;
     11. Do not implement the mutator based on the examples provided in mutation_content. Instead, focus on designing and implementing complex mutation effects, ideally creating a mutator that maximizes coverage of the seed program's code;
-    12. Design a unique name that can clearly demonstrate the function of the mutator, replace "Mutator_" in the code template, Name words are separated by _, and the first letter of each word is capitalized (for example :Add_Const_Generics), and attach "_{mutator_index}", Be sure to specify this name separately on the last line at the end of the output text;
+    12. Design a unique name that can clearly demonstrate the function of the mutator, replace "Mutator_" in the code template. Name words are separated by '_', and the first letter of each word is capitalized (for example : Add_Const_Generics), and attach "_{mutator_index}". Be sure to specify this name separately on the last line at the end of the output text;
     Output only the filled-in {LANGUAGE} code, without additional explanations, comments beyond those in the template, or Markdown code blocks.
     Output only the completed {LANGUAGE} code, without any additional explanations or formatting, ensuring that no comments beyond those in the template or Markdown code blocks are included.
     Here are the necessary inputs:
@@ -158,7 +158,7 @@ def generate_mutator(mutation_content,mutator_index):
             if attempt < MAX_RETRIES - 1:
                 time.sleep(7)
             else:
-                print("Max retries exceeded. Unable to complete request")
+                print("Max retries exceeded. Unable to complete request.")
     response_data = response.json()
     if "choices" in response_data:
         code = response_data['choices'][0]['message']['content']
@@ -255,7 +255,7 @@ def main(args):
     print(f"Generated all mutators in {OUTPUT_FILE}.")
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Generate mutator code for a specific language")
+    parser = argparse.ArgumentParser(description="Generate mutator code for a specific language.")
     parser.add_argument("--language", default="Rust", help="LANGUAGE to process (Rust, C++).")
     parser.add_argument("--config", default="config.json", help="The absolute path of the configuration file.")
     args = parser.parse_args()

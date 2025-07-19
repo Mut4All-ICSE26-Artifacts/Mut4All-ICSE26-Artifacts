@@ -22,7 +22,7 @@ def load_config(config_path, language):
         with open(config_path, 'r', encoding='utf-8') as f:
             config = json.load(f)
         if language not in config:
-            raise ValueError(f"Unsupported language: {language} ")
+            raise ValueError(f"Unsupported language: {language}.")
         
         # API_KET is initialized
         OPENAI_API_KEY = config[language]["api_key"]
@@ -36,9 +36,9 @@ def load_config(config_path, language):
             raise ValueError("One or more configuration variables are empty. Please check the configuration file.")
         return config
     except FileNotFoundError:
-        raise FileNotFoundError(f"The configuration file {config_path} does not exist. Please ensure that the file is located in the specified path ")
+        raise FileNotFoundError(f"The configuration file {config_path} does not exist. Please ensure that the file is located in the specified path.")
     except json.JSONDecodeError:
-        raise ValueError(f"The format of the configuration file {config_path} is incorrect. Please check the JSON syntax ")
+        raise ValueError(f"The format of the configuration file {config_path} is incorrect. Please check the JSON syntax.")
 
 
 def extract_Tag(line):
@@ -57,15 +57,14 @@ def send_to_gpt(Tag, file_content):
     """
 
     prompt_user = f"""
-    You are a {LANGUAGE} compiler expert.
     Here is a bug report for the {LANGUAGE} compiler labeled by {Tag}. Summarize the structures that {LANGUAGE} compiler bugs are more likely to trigger, and design mutation operators that are likely to expose such bugs.
     1. Target a specific code construct and clearly state where it applies;
     2. Customized data names, types, and variable names in bug messages are not allowed in the description and examples of the mutation operator, which should be widely adapted to seed programs;
     3. Achieve high coverage across different program structures and features;
     4. Use examples of pseudo-code form or natural language descriptions to illustrate mutated content to avoid undeclared variables or types;
-    5. Note that preference is given to using variables, types, or functions that already exist in the seed program. If new elements are introduced, specify how they should be declared, avoiding ambiguous terms such as 'complex' or 'invalid'; clearly outline what changes need to be made;
-    The output must be plain text. Do not use the Markdown format.Design exactly one mutation operator per request. The beginning of each mutation starts with a mutation operator.
-    Here are the contents of the bug report: {file_content}
+    5. Note that preference is given to using variables, types, or functions that already exist in the seed program. If new elements are introduced, specify how they should be declared, avoiding ambiguous terms such as 'complex' or 'invalid'; Clearly outline what changes need to be made;
+    The output must be plain text. Do not use the Markdown format. Design exactly one mutation operator per request. The beginning of each mutation starts with a mutation operator.
+    Here are the contents of the bug report: {file_content}.
     """
     data = {
         # select model
@@ -91,7 +90,7 @@ def send_to_gpt(Tag, file_content):
             if attempt < MAX_RETRIES - 1:
                 time.sleep(7)
             else:
-                print("Max retries exceeded. Unable to complete request")
+                print("Max retries exceeded. Unable to complete request.")
 
     # response = requests.post(url, headers=headers, json=data, proxies=proxies)
     response_data = response.json()
@@ -106,8 +105,8 @@ def send_to_gpt(Tag, file_content):
         # print({token_usage['completion_tokens']})
         return mutation_description,token_usage
     else:
-        error_msg = f"Error: {response_data}"
-        return error_msg, {"error": "No choices in response"}
+        error_msg = f"Error: {response_data}."
+        return error_msg, {"error": "No choices in response."}
 
 # save mutation description
 def save_mutation_description(Tag, original_filename, mutation_description):
@@ -122,7 +121,7 @@ def save_mutation_description(Tag, original_filename, mutation_description):
     with open(file_path, 'w', encoding='utf-8') as file:
         file.write(mutation_description)
     
-    print(f"Mutation description saved to {file_path}")
+    print(f"Mutation description saved to {file_path}.")
 
 # save token
 def save_token(input_token,output_token,output_filename):
@@ -155,7 +154,7 @@ def process_txt_files(Tag,Bug_labels_file_path):
                 output_filename = f"{Tag}_{filename}"
                 output_file_path = os.path.join(OUTPUT_FILE, output_filename)
                 if os.path.exists(output_file_path):
-                    print(f"Skip {output_filename}, which already exists in the OUTPUT_FILE folder")
+                    print(f"Skip {output_filename}, which already exists in the OUTPUT_FILE folder.")
                     continue
                 with open(file_path, 'r', encoding='utf-8') as file:
                     content = file.read().strip()
@@ -177,16 +176,16 @@ def main(args):
         for line in file:
             Tag = extract_Tag(line)
             if Tag:
-                print(f"Processing bug labels: {Tag}")
+                print(f"Processing bug labels: {Tag}.")
                 Bug_labels_file_path = f"{BUG_LABELS_PATH}\\{Tag}"
                 process_txt_files(Tag, Bug_labels_file_path)
             else:
-                print(f"Skipping invalid line: {line.strip()}")
+                print(f"Skipping invalid line: {line.strip()}.")
     print(f"Generated all mutations in {OUTPUT_FILE}.")
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description="Process bug reports for a specific language")
-    parser.add_argument("--language", default="Rust", help="LANGUAGE to process (Rust, C++)")
-    parser.add_argument("--config", default="config.json", help="The absolute path of the configuration file")
+    parser = argparse.ArgumentParser(description="Process bug reports for a specific language.")
+    parser.add_argument("--language", default="Rust", help="LANGUAGE to process (Rust, C++).")
+    parser.add_argument("--config", default="config.json", help="The absolute path of the configuration file.")
     args = parser.parse_args()
     main(args)

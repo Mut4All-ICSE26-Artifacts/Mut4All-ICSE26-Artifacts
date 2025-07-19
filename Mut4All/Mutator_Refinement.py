@@ -37,7 +37,7 @@ def load_config(config_path, language):
         with open(config_path, 'r', encoding='utf-8') as f:
             config = json.load(f)
         if language not in config:
-            raise ValueError(f"Unsupported language: {language} ")
+            raise ValueError(f"Unsupported language: {language}.")
         
         # API_KET is initialized
         OPENAI_API_KEY = config[language]["api_key"]        
@@ -62,9 +62,9 @@ def load_config(config_path, language):
             raise ValueError("One or more configuration variables are empty. Please check the configuration file.")
         return config
     except FileNotFoundError:
-        raise FileNotFoundError(f"The configuration file {config_path} does not exist. Please ensure that the file is located in the specified path ")
+        raise FileNotFoundError(f"The configuration file {config_path} does not exist. Please ensure that the file is located in the specified path.")
     except json.JSONDecodeError:
-        raise ValueError(f"The format of the configuration file {config_path} is incorrect. Please check the JSON syntax ")
+        raise ValueError(f"The format of the configuration file {config_path} is incorrect. Please check the JSON syntax.")
     
 # read the Mutator directory without checking the compilation status
 def read_mutator_files(directory):
@@ -92,7 +92,7 @@ class TestFramework:
     # embed test code
     def embed_mutator_code(self, test_content, mutator_code,mutator_name):
         return ''
-    # replace the original test code with the embedded test code.
+    # replace the original test code with the embedded test code
     def write_test_file(self, content):
         pass
     # compile mutator
@@ -119,7 +119,7 @@ class TestFrameWorkRust(TestFramework):
     def __init__(self):
         super().__init__()
         self.prompt_provide = r""
-        self.prompt_task = r"Can be embedded into a main.rs file between the first and second lines, after initial imports. If panic or error occurs in the main function, it indicates that the mutator has made an error."
+        self.prompt_task = r"Ensure the revised code can be embedded into a main.rs file between the first and second lines, after initial imports. If panic or error occurs in the main function, it indicates that the mutator has made an error."
     def read_test_file(self, path)->str:
         with open(path, 'r', encoding='utf-8') as f:
             return f.read()
@@ -183,8 +183,8 @@ class TestFrameWorkRust(TestFramework):
 class TestFrameworkCPP(TestFramework):
     def __init__(self):
         super().__init__()
-        self.prompt_provide = r"Please note that this code segment is composed by combining a .h file and a .cpp file, with their respective starting points marked by the comments `//header file` and `//source file`. "
-        self.prompt_task = r"Is still presented in the combined form of a .h file and a .cpp file, with the starting points clearly marked by the comments `//header file` and `//source file`, respectively. Do not attempt to add or modify any statement that introduce third-party libraries (i.e., the header file inclusion statements in C++); they are confirmed to be error-free."
+        self.prompt_provide = r"Please note that this code segment is composed by combining a .h file and a .cpp file, with their respective starting points marked by the comments `//header file` and `//source file`."
+        self.prompt_task = r"Is still presented in the combined form of a .h file and a .cpp file, with the starting points clearly marked by the comments `//header file` and `//source file`, respectively. Do not attempt to add or modify any statement that introduce third-party libraries (i.e., the header file inclusion statements in C++); They are confirmed to be error-free."
     def embed_mutator_code(self, test_content, mutator_code,mutator_name):
         self.mutator_no = mutator_name[mutator_name.rfind('_')+1:]
         mutator_code = mutator_code.replace("_"+self.mutator_no, "_1")
@@ -271,7 +271,7 @@ class TestFrameworkCPP(TestFramework):
         # ...
     # def run_compile(self):
         # ...
-    #d ef save_compilable_code(self, file_name, code):
+    # def save_compilable_code(self, file_name, code):
         # ...
     # def judge_mutation_effect(self):
         # ...
@@ -288,15 +288,15 @@ def fix_code(previous_code, compiler_errors, iteration,framework):
     You are a {LANGUAGE} compiler expert revising a mutator code to fix errors while preserving its mutation logic.
     """
     prompt_user = f"""
-    Given the buggy mutator code and the associated compiler error messages, produce a corrected version that resolves the errors without changing the core mutation behavior. {prompt_provide}
+    Given the buggy mutator code and the associated compiler error messages, produce a corrected version that resolves the errors without changing the core mutation behavior. {prompt_provide}.
     1. Prioritize fixing the provided compiler errors by identifying their causes (e.g., missing imports, type mismatches) and applying targeted corrections;
     2. Ensure the revised code is syntactically valid {LANGUAGE} and compiles successfully;
     3. Ensure the revised code preserves the mutator's logic for manipulating the AST to potentially induce internal compiler errors;
-    {prompt_task}
+    {prompt_task}.
     Output only the corrected {LANGUAGE} code in plain text, without any explanations, comments, or Markdown formatting.
     Here are the necessary inputs:
-    Previous Mutator Code: {previous_code}
-    Compile Errors: {compiler_errors}
+    Previous Mutator Code: {previous_code}.
+    Compile Errors: {compiler_errors}.
     """
 
     data = {
@@ -320,7 +320,7 @@ def fix_code(previous_code, compiler_errors, iteration,framework):
         except requests.exceptions.RequestException as e:
             print(f"Attempt {attempt + 1} failed: {e}")
             if attempt < MAX_RETRIES - 1:
-                time.sleep(5)
+                time.sleep(7)
             else:
                 print("Max retries exceeded. Unable to complete request")
     
@@ -507,9 +507,9 @@ def main(args):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Generate mutator code for a specific language")
-    parser.add_argument("--language", default="Rust", help="Language to process (Rust, C++)")
-    parser.add_argument("--config", default="config.json", help="The absolute path of the configuration file ")
+    parser = argparse.ArgumentParser(description="Generate mutator code for a specific language.")
+    parser.add_argument("--language", default="Rust", help="Language to process (Rust, C++).")
+    parser.add_argument("--config", default="config.json", help="The absolute path of the configuration file.")
     args = parser.parse_args()
     main(args)
  

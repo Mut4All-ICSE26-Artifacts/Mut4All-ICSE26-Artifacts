@@ -14,7 +14,7 @@ def main():
     Mutator_Implementation_Synthesis.main(args)
     print("\nStarting Mutator_Restorer...")
     Mutator_Refinement.main(args)
-    print("\nOK")
+    print("\nOK.")
 
 if __name__ == "__main__":
     main()
